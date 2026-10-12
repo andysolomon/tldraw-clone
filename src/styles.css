@@ -1,0 +1,761 @@
+/* Token values and panel measurements come from tldraw 5.5.0's shipped stylesheet. */
+
+html,
+body,
+#root {
+	height: 100%;
+	margin: 0;
+	overflow: hidden;
+	overscroll-behavior: none;
+}
+
+.tl-container {
+	--tl-radius-2: 6px;
+	--tl-radius-3: 9px;
+	--tl-radius-4: 11px;
+	position: fixed;
+	inset: 0;
+	overflow: hidden;
+	color: var(--tl-color-text-1);
+	background: var(--tl-color-background);
+	font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+	font-size: 12px;
+	font-weight: 500;
+	line-height: 1.6;
+	-webkit-font-smoothing: antialiased;
+}
+
+.tl-container,
+.tl-container * {
+	box-sizing: border-box;
+	-webkit-tap-highlight-color: transparent;
+	-webkit-user-select: none;
+	user-select: none;
+}
+
+.tl-theme__light {
+	--tl-color-selection-stroke: #3182ed;
+	--tl-color-background: #f9fafb;
+	--tl-color-grid: #6e6e6e;
+	--tl-color-low: #edf0f2;
+	--tl-color-muted-1: #0000001a;
+	--tl-color-muted-2: #0000000b;
+	--tl-color-overlay: #0003;
+	--tl-color-divider: #e8e8e8;
+	--tl-color-panel: #fcfcfc;
+	--tl-color-panel-contrast: #fff;
+	--tl-color-selected: #3182ed;
+	--tl-color-selected-contrast: #fff;
+	--tl-color-focus: #2d67d2;
+	--tl-color-text: #000;
+	--tl-color-text-0: #1c1c1c;
+	--tl-color-text-1: #2e2e2e;
+	--tl-color-text-3: #6e7477;
+	--tl-shadow-2: 0px 0px 2px #00000029, 0px 2px 3px #0000003d, 0px 2px 6px #0000001a, inset 0px 0px 0px 1px var(--tl-color-panel-contrast);
+	--tl-shadow-3: 0px 1px 2px #00000047, 0px 2px 6px #00000024, inset 0px 0px 0px 1px var(--tl-color-panel-contrast);
+	--tl-shadow-4: 0px 0px 3px #00000030, 0px 5px 4px #00000029, 0px 2px 16px #0000000f, inset 0px 0px 0px 1px var(--tl-color-panel-contrast);
+}
+
+.tl-theme__dark {
+	--tl-color-selection-stroke: #3182ed;
+	--tl-color-background: #101011;
+	--tl-color-grid: #666;
+	--tl-color-low: #1a1a1c;
+	--tl-color-muted-1: #ffffff1a;
+	--tl-color-muted-2: #ffffff0d;
+	--tl-color-overlay: #00000080;
+	--tl-color-divider: #33333d;
+	--tl-color-panel: #202025;
+	--tl-color-panel-contrast: #353442;
+	--tl-color-selected: #4387f4;
+	--tl-color-selected-contrast: #fff;
+	--tl-color-focus: #a5c3f3;
+	--tl-color-text: #f9fafb;
+	--tl-color-text-0: #f1eeee;
+	--tl-color-text-1: #d9d9d9;
+	--tl-color-text-3: #bdc0c2;
+	--tl-shadow-2: 0px 1px 3px #000a, 0px 2px 6px #00000054, inset 0px 0px 0px 1px var(--tl-color-panel-contrast);
+	--tl-shadow-3: 0px 1px 3px #00000080, 0px 2px 12px #00000080, inset 0px 0px 0px 1px var(--tl-color-panel-contrast);
+	--tl-shadow-4: var(--tl-shadow-3);
+}
+
+/* ---- canvas ---- */
+
+.tl-canvas {
+	position: absolute;
+	inset: 0;
+	overflow: hidden;
+	touch-action: none;
+	background: var(--tl-color-background);
+}
+
+.tl-grid {
+	position: absolute;
+	inset: 0;
+	pointer-events: none;
+	opacity: 0.3;
+	background-image: radial-gradient(circle, var(--tl-color-grid) 1px, transparent 1px);
+}
+
+.tl-shapes {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 0;
+	height: 0;
+	transform-origin: top left;
+}
+
+/* Shapes are hit-tested geometrically, so their elements never take pointer events. */
+.tl-shape {
+	position: absolute;
+	top: 0;
+	left: 0;
+	transform-origin: top left;
+	pointer-events: none;
+}
+
+.tl-theme__light .tl-shape[data-shape-type='highlight'] {
+	mix-blend-mode: multiply;
+}
+
+.tl-theme__dark .tl-shape[data-shape-type='highlight'] {
+	mix-blend-mode: screen;
+}
+
+.tl-svg-container {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	overflow: visible;
+}
+
+.tl-note {
+	position: relative;
+	width: 100%;
+	height: 100%;
+	border-radius: 1px;
+	box-shadow:
+		rgba(15, 23, 31, 0.6) 0px 3.7px 5px -5px,
+		rgba(15, 23, 31, 0.43) 0px 13px 15px -11.7px,
+		rgba(15, 23, 44, 0.03) 0px 48px 10px -10px inset;
+}
+
+.tl-text-label {
+	position: absolute;
+	inset: 0;
+	display: flex;
+}
+
+.tl-text-label__inner {
+	min-width: 1px;
+	max-width: 100%;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+.tl-text-shape {
+	width: max-content;
+	min-width: 8px;
+	white-space: pre;
+}
+
+.tl-text-input {
+	min-width: 1px;
+	outline: none;
+	cursor: text;
+	pointer-events: all;
+	white-space: inherit;
+	-webkit-user-select: text;
+	user-select: text;
+}
+
+.tl-frame-heading {
+	position: absolute;
+	bottom: 100%;
+	left: 0;
+	padding: 2px 6px 4px 0;
+	color: var(--tl-color-text-1);
+	font-size: 12px;
+	white-space: nowrap;
+}
+
+.tl-text-measure {
+	position: absolute;
+	top: -9999px;
+	left: -9999px;
+	visibility: hidden;
+	pointer-events: none;
+	overflow-wrap: break-word;
+}
+
+/* ---- overlays ---- */
+
+.tl-overlays {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+	pointer-events: none;
+}
+
+.tl-indicator {
+	fill: none;
+	stroke: var(--tl-color-selected);
+	stroke-width: 1.5px;
+}
+
+.tl-indicator__hint {
+	stroke-width: 2.5px;
+}
+
+.tl-selection__fg {
+	fill: none;
+	stroke: var(--tl-color-selection-stroke);
+	stroke-width: 1.5px;
+}
+
+.tl-corner-handle,
+.tl-point-handle {
+	fill: var(--tl-color-background);
+	stroke: var(--tl-color-selection-stroke);
+	stroke-width: 1.5px;
+}
+
+.tl-hit {
+	fill: transparent;
+	stroke: transparent;
+	pointer-events: all;
+}
+
+.tl-hit__edge {
+	stroke-width: 12px;
+	pointer-events: stroke;
+}
+
+.tl-overlays [data-handle] {
+	pointer-events: all;
+}
+
+.tl-brush {
+	fill: hsl(0 0% 56% / 10.2%);
+	stroke: hsl(0 0% 56% / 25.1%);
+	stroke-width: 1px;
+}
+
+.tl-scribble {
+	fill: none;
+	stroke-linecap: round;
+	stroke-linejoin: round;
+}
+
+.tl-scribble__eraser {
+	stroke: var(--tl-color-text-3);
+	stroke-width: 8px;
+	opacity: 0.35;
+}
+
+.tl-scribble__laser {
+	stroke: hsl(0 100% 50%);
+	stroke-width: 4px;
+	opacity: 0.8;
+}
+
+/* ---- layout ---- */
+
+.tlui-layout {
+	position: absolute;
+	inset: 0;
+	z-index: 300;
+	display: grid;
+	grid-template-rows: minmax(0, 1fr) auto;
+	pointer-events: none;
+}
+
+.tlui-layout__top {
+	display: flex;
+	justify-content: space-between;
+	align-items: flex-start;
+	min-width: 0;
+}
+
+.tlui-layout__bottom {
+	position: relative;
+	display: flex;
+	justify-content: center;
+	align-items: flex-end;
+}
+
+.tlui-top-left {
+	display: flex;
+	align-items: center;
+	gap: 4px;
+	padding: 3px 0 0 12px;
+	pointer-events: all;
+}
+
+.tlui-wordmark {
+	color: var(--tl-color-text-0);
+	font-size: 15px;
+	font-weight: 700;
+	letter-spacing: -0.02em;
+}
+
+/* ---- buttons ---- */
+
+.tlui-button {
+	position: relative;
+	z-index: 0;
+	display: flex;
+	flex-shrink: 0;
+	justify-content: center;
+	align-items: center;
+	min-width: 40px;
+	height: 40px;
+	padding: 0 12px;
+	border: none;
+	background: transparent;
+	color: var(--tl-color-text-1);
+	font: inherit;
+	font-size: 12px;
+	cursor: pointer;
+	pointer-events: all;
+}
+
+.tlui-button::after {
+	content: '';
+	position: absolute;
+	inset: 4px;
+	z-index: -1;
+	border-radius: var(--tl-radius-2);
+	background: var(--tl-color-muted-2);
+	opacity: 0;
+}
+
+.tlui-button:not(:disabled):hover::after,
+.tlui-button[data-state='on']::after,
+.tlui-button__icon[aria-pressed='true']::after {
+	opacity: 1;
+}
+
+.tlui-button:disabled {
+	color: var(--tl-color-text-3);
+	opacity: 0.5;
+	cursor: default;
+}
+
+.tlui-button:focus-visible {
+	outline: 2px solid var(--tl-color-focus);
+	outline-offset: -4px;
+	border-radius: 8px;
+}
+
+.tlui-button__icon {
+	padding: 0;
+}
+
+.tlui-button__tool {
+	width: 44px;
+	min-width: 44px;
+	height: 48px;
+	padding: 0;
+}
+
+.tlui-button__tool::after {
+	inset: 4px 2px;
+	border-radius: 8px;
+}
+
+.tlui-button__tool[aria-pressed='true'] {
+	color: var(--tl-color-selected-contrast);
+}
+
+.tlui-button__tool[aria-pressed='true']::after {
+	background: var(--tl-color-selected);
+	opacity: 1;
+}
+
+.tlui-button__style {
+	width: 36px;
+	min-width: 36px;
+	padding: 0;
+}
+
+.tlui-button__style[data-state='on'] {
+	color: var(--tl-color-text);
+}
+
+.tlui-icon {
+	flex-shrink: 0;
+}
+
+/* ---- style panel ---- */
+
+.tlui-style-panel__wrapper {
+	margin: 8px;
+	border-radius: var(--tl-radius-3);
+	background: var(--tl-color-panel);
+	box-shadow: var(--tl-shadow-2);
+	color: var(--tl-color-text);
+	pointer-events: all;
+}
+
+.tlui-style-panel {
+	position: relative;
+	width: 148px;
+}
+
+.tlui-style-panel__section {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+}
+
+/* Pickers open beside the whole panel, level with the row they belong to. */
+.tlui-style-panel .tlui-row {
+	position: relative;
+}
+
+.tlui-style-panel .tlui-popover {
+	position: static;
+}
+
+.tlui-style-panel__section + .tlui-style-panel__section {
+	border-top: 1px solid var(--tl-color-divider);
+}
+
+.tlui-grid {
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
+	padding: 2px;
+}
+
+.tlui-style-panel .tlui-grid .tlui-button__style {
+	height: 36px;
+}
+
+.tlui-row {
+	display: flex;
+	padding: 0 2px;
+}
+
+.tlui-color-swatch {
+	width: 16px;
+	height: 16px;
+	border-radius: 100%;
+}
+
+.tlui-size-label {
+	font-size: 13px;
+	font-weight: 700;
+}
+
+.tlui-font-label {
+	font-size: 14px;
+}
+
+.tlui-style-panel__picker {
+	justify-content: space-between;
+	width: 100%;
+	padding: 0 11px 0 12px;
+}
+
+.tlui-slider__container {
+	display: flex;
+	align-items: center;
+	height: 44px;
+	padding: 0 11px;
+}
+
+.tlui-slider {
+	width: 100%;
+	height: 18px;
+	margin: 0;
+	background: transparent;
+	cursor: pointer;
+	pointer-events: all;
+	-webkit-appearance: none;
+	appearance: none;
+}
+
+.tlui-slider::-webkit-slider-runnable-track {
+	height: 3px;
+	border-radius: 2px;
+	background: linear-gradient(to right, var(--tl-color-selected) var(--tl-slider-fill, 100%), var(--tl-color-muted-1) var(--tl-slider-fill, 100%));
+}
+
+.tlui-slider::-moz-range-track {
+	height: 3px;
+	border-radius: 2px;
+	background: var(--tl-color-muted-1);
+}
+
+.tlui-slider::-moz-range-progress {
+	height: 3px;
+	border-radius: 2px;
+	background: var(--tl-color-selected);
+}
+
+.tlui-slider::-webkit-slider-thumb {
+	width: 18px;
+	height: 18px;
+	margin-top: -7.5px;
+	border-radius: 999px;
+	background: var(--tl-color-panel);
+	box-shadow: inset 0 0 0 2px var(--tl-color-text-1);
+	cursor: grab;
+	-webkit-appearance: none;
+	appearance: none;
+}
+
+.tlui-slider::-moz-range-thumb {
+	width: 18px;
+	height: 18px;
+	border: none;
+	border-radius: 999px;
+	background: var(--tl-color-panel);
+	box-shadow: inset 0 0 0 2px var(--tl-color-text-1);
+	cursor: grab;
+}
+
+/* ---- popovers and menus ---- */
+
+.tlui-popover {
+	position: relative;
+	display: flex;
+}
+
+.tlui-popover__content {
+	position: absolute;
+	z-index: 400;
+	width: max-content;
+	border-radius: var(--tl-radius-3);
+	background: var(--tl-color-panel);
+	box-shadow: var(--tl-shadow-3);
+	pointer-events: all;
+}
+
+.tlui-popover__top {
+	bottom: calc(100% + 8px);
+	left: 50%;
+	transform: translateX(-50%);
+}
+
+.tlui-popover__top-start {
+	bottom: calc(100% + 4px);
+	left: 4px;
+}
+
+.tlui-popover__bottom-start {
+	top: 100%;
+	left: 0;
+}
+
+.tlui-popover__left {
+	top: 0;
+	right: calc(100% + 10px);
+}
+
+.tlui-popover__content.tlui-grid .tlui-button {
+	width: 38px;
+	min-width: 38px;
+	height: 38px;
+}
+
+.tlui-popover__content.tlui-grid .tlui-button__tool::after {
+	inset: 4px;
+}
+
+.tlui-menu {
+	min-width: 180px;
+}
+
+.tlui-menu__group + .tlui-menu__group {
+	border-top: 1px solid var(--tl-color-divider);
+}
+
+.tlui-menu__item {
+	position: relative;
+}
+
+.tlui-menu__item + .tlui-menu__item .tlui-button__menu {
+	margin-top: -4px;
+}
+
+.tlui-button__menu {
+	justify-content: space-between;
+	gap: 8px;
+	width: 100%;
+	padding: 0 12px;
+	text-align: left;
+}
+
+.tlui-button__label {
+	flex-grow: 1;
+	white-space: nowrap;
+}
+
+.tlui-kbd {
+	margin-inline-start: 12px;
+	color: var(--tl-color-text-3);
+	font-family: inherit;
+	font-size: 11px;
+	white-space: nowrap;
+}
+
+.tlui-menu__check[data-checked='false'] {
+	visibility: hidden;
+}
+
+.tlui-menu__submenu {
+	position: absolute;
+	top: 0;
+	left: calc(100% - 4px);
+	z-index: 401;
+	border-radius: var(--tl-radius-3);
+	background: var(--tl-color-panel);
+	box-shadow: var(--tl-shadow-3);
+}
+
+/* ---- bottom: navigation and toolbar ---- */
+
+.tlui-navigation-panel {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	display: flex;
+	flex-direction: column;
+	width: min-content;
+	border-top: 2px solid var(--tl-color-background);
+	border-right: 2px solid var(--tl-color-background);
+	border-top-right-radius: var(--tl-radius-4);
+	background: var(--tl-color-low);
+	pointer-events: all;
+}
+
+.tlui-navigation-panel .tlui-row {
+	padding: 0;
+}
+
+.tlui-navigation-panel .tlui-button__icon {
+	min-width: 36px;
+}
+
+.tlui-zoom-menu__button {
+	width: 60px;
+	min-width: 60px;
+	padding: 0;
+}
+
+.tlui-minimap {
+	padding: 0 8px 8px;
+}
+
+.tlui-minimap__canvas {
+	display: block;
+	border-radius: 4px;
+	cursor: pointer;
+}
+
+.tlui-main-toolbar {
+	display: flex;
+	justify-content: center;
+	padding-bottom: 8px;
+}
+
+.tlui-main-toolbar__inner {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+}
+
+.tlui-main-toolbar__extras {
+	display: flex;
+	margin-left: 8px;
+	border: 2px solid var(--tl-color-background);
+	border-bottom: none;
+	border-radius: var(--tl-radius-4) var(--tl-radius-4) 0 0;
+	background: var(--tl-color-low);
+	pointer-events: all;
+}
+
+.tlui-main-toolbar__extras > .tlui-button,
+.tlui-main-toolbar__extras > .tlui-popover > .tlui-button {
+	min-width: 36px;
+}
+
+.tlui-main-toolbar__tools {
+	position: relative;
+	display: flex;
+	align-items: center;
+	border-radius: var(--tl-radius-4);
+	background: var(--tl-color-panel);
+	box-shadow: var(--tl-shadow-2);
+	pointer-events: all;
+}
+
+.tlui-main-toolbar__overflow {
+	width: 40px;
+	min-width: 40px;
+}
+
+/* ---- dialog ---- */
+
+.tlui-dialog__overlay {
+	position: absolute;
+	inset: 0;
+	z-index: 500;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	background: var(--tl-color-overlay);
+}
+
+.tlui-dialog {
+	display: flex;
+	flex-direction: column;
+	width: min(700px, 92vw);
+	max-height: 82vh;
+	border-radius: var(--tl-radius-4);
+	background: var(--tl-color-panel);
+	box-shadow: var(--tl-shadow-4);
+	color: var(--tl-color-text-1);
+}
+
+.tlui-dialog__header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 4px 4px 0 16px;
+	font-size: 13px;
+	font-weight: 600;
+}
+
+.tlui-dialog__body {
+	columns: 2;
+	column-gap: 40px;
+	overflow-y: auto;
+	padding: 4px 16px 16px;
+}
+
+.tlui-dialog__body section {
+	break-inside: avoid;
+	margin-bottom: 12px;
+}
+
+.tlui-dialog__body h2 {
+	margin: 8px 0 4px;
+	color: var(--tl-color-text-3);
+	font-size: 12px;
+	font-weight: 500;
+}
+
+.tlui-shortcut {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	height: 30px;
+}
