@@ -301,6 +301,19 @@ body {
 	pointer-events: all;
 }
 
+.tlui-sync-status {
+	margin-right: 10px;
+	color: var(--tl-color-text-3);
+	font-size: 12px;
+	white-space: nowrap;
+}
+
+.tlui-sync-status[data-status='offline'],
+.tlui-sync-status[data-status='too-large'] {
+	color: var(--tl-color-text-1);
+	font-weight: 600;
+}
+
 .tlui-primary-button {
 	height: 32px;
 	padding: 0 14px;

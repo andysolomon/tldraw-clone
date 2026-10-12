@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test": "node --test 'tests/*.test.ts'"
   },
   "dependencies": {
     "@clerk/react": "^6.17.8",
@@ -15,11 +16,14 @@
     "@fontsource/ibm-plex-sans": "^5.3.0",
     "@fontsource/ibm-plex-serif": "^5.3.0",
     "@fontsource/shantell-sans": "^5.3.0",
+    "@upstash/redis": "^1.39.0",
+    "jose": "^6.2.12",
     "perfect-freehand": "^1.2.3",
     "react": "^19.3.0",
     "react-dom": "^19.3.0"
   },
   "devDependencies": {
+    "@types/node": "^26.6.5",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
     "@vitejs/plugin-react": "^6.1.2",

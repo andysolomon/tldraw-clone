@@ -5,6 +5,9 @@ import type { Box, Camera, Doc, GeoType, Shape, Styles, ToolId, Vec } from './ty
 const STORAGE_KEY = 'tldraw-clone:v1'
 const MAX_HISTORY = 200
 
+/** Where the signed-in user's drawing stands relative to their account. "off" when signed out. */
+export type SyncStatus = 'off' | 'loading' | 'saving' | 'saved' | 'offline' | 'too-large'
+
 export interface Scribble {
 	kind: 'eraser' | 'laser'
 	points: Vec[]
@@ -31,6 +34,7 @@ export interface State {
 	canUndo: boolean
 	canRedo: boolean
 	dialog: 'shortcuts' | null
+	sync: SyncStatus
 }
 
 const DEFAULT_STYLES: Styles = {
@@ -81,6 +85,7 @@ function initialState(): State {
 		canUndo: false,
 		canRedo: false,
 		dialog: null,
+		sync: 'off',
 	}
 }
 
@@ -182,6 +187,14 @@ function restore(from: Doc[], to: Doc[]) {
 		hoveredId: null,
 		...historyFlags(),
 	})
+}
+
+/** Swap in a different drawing wholesale, such as the one saved to an account. Undo history does not carry over. */
+export function resetDoc(doc: Doc) {
+	undoStack.length = 0
+	redoStack.length = 0
+	gestureDoc = null
+	setState({ doc, selectedIds: [], hoveredId: null, editingId: null, erasingIds: [], ...historyFlags() })
 }
 
 export const undo = () => restore(undoStack, redoStack)
