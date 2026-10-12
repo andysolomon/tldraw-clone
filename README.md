@@ -28,6 +28,20 @@ npm run build    # typecheck + production build into dist/
 
 Press `⋮` → **Keyboard shortcuts** for the full list.
 
+## Sign-in
+
+Accounts are handled by [Clerk](https://clerk.com). Set a publishable key and a **Sign in** button
+appears in the top-right corner; signed-in users get Clerk's avatar menu (manage account, sign out).
+Without a key the app runs as before, with no account UI.
+
+```sh
+cp .env.example .env.local   # then fill in VITE_CLERK_PUBLISHABLE_KEY
+```
+
+On Vercel, the Clerk marketplace integration sets `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` on the
+project, which is read as well. Signing in does not change where drawings are stored yet: they
+still live in the browser's `localStorage`.
+
 ## How it relates to tldraw
 
 The look and behaviour were worked out by inspecting tldraw.com (v5.5.0) in a browser with
@@ -48,7 +62,7 @@ resize and rotate math, arrow binding, the freehand stroke settings (via
 [perfect-freehand](https://github.com/steveruizok/perfect-freehand)), cloud and heart outlines, all
 icons, and the SVG selection overlay (tldraw paints its overlay on a canvas).
 
-Not implemented: multiplayer, sign-in and sharing, comments, multiple pages, embeds, rich text,
+Not implemented: multiplayer, cloud storage and sharing, comments, multiple pages, embeds, rich text,
 snapping, and frames that clip or own their children (a frame only carries the shapes inside it
 when moved). Text in PNG exports falls back to system fonts.
 

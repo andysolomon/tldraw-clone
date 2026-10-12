@@ -128,8 +128,12 @@ const isTyping = (target: EventTarget | null) => {
 	return !!el && (el.isContentEditable || el.tagName === 'INPUT' || el.tagName === 'TEXTAREA')
 }
 
+/** Keys pressed inside something layered over the app, like the sign-in dialog, are not ours. */
+const isOutsideApp = (target: EventTarget | null) =>
+	target instanceof Element && target !== document.body && !target.closest('.tl-container')
+
 export function handleKeyDown(e: KeyboardEvent) {
-	if (isTyping(e.target)) return
+	if (isTyping(e.target) || isOutsideApp(e.target)) return
 	const s = getState()
 	if (s.dialog) {
 		if (e.key === 'Escape') setState({ dialog: null })

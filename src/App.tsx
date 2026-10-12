@@ -1,4 +1,5 @@
 import { type DragEvent, useEffect } from 'react'
+import { AccountButton } from './auth'
 import { clipboardText, copy, cut, insertImage, pasteFromClipboardData, remeasureText } from './editor/actions'
 import { handleKeyDown, handleKeyUp } from './editor/shortcuts'
 import { getState, useStore } from './editor/store'
@@ -65,7 +66,10 @@ export function App() {
 			<div className="tlui-layout">
 				<div className="tlui-layout__top">
 					<TopLeft />
-					<StylePanel />
+					<div className="tlui-layout__top__right">
+						<AccountButton />
+						<StylePanel />
+					</div>
 				</div>
 				<div className="tlui-layout__bottom">
 					<NavigationPanel />
